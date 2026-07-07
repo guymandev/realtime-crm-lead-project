@@ -1,0 +1,10 @@
+{
+  "resource": "/crm",
+  "path": "/crm",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"subscription_id\": \"whsub_test\", \"event\": {\"id\": \"ev_test\", \"lead_id\": \"lead_test123\", \"action\": \"created\", \"object_type\": \"lead\", \"data\": {\"display_name\": \"Test Lead\", \"date_created\": \"2025-05-20T12:14:56.409000+00:00\", \"status_label\": \"Potential\"}}}",
+  "isBase64Encoded": false
+}
