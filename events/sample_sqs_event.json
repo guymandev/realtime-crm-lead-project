@@ -1,0 +1,15 @@
+{
+  "Records": [
+    {
+      "messageId": "local-test-message-1",
+      "receiptHandle": "local-test-receipt-handle",
+      "body": "{\"lead_id\": \"lead_test123\", \"raw_bucket\": \"crm-lead-notification\", \"raw_s3_key\": \"source/crm_event_lead_test123.json\"}",
+      "attributes": {},
+      "messageAttributes": {},
+      "md5OfBody": "local-test-md5",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:662505430425:crm-lead-delay-queue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}
