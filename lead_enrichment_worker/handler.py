@@ -7,6 +7,7 @@ from typing import Any
 import boto3
 
 from src.enrich_lead import LeadEnrichmentError, build_enriched_s3_key, enrich_lead
+from src.notify import NotificationError, send_notification
 from src.owner_lookup import OwnerLookupError, fetch_owner_lookup
 
 logger = logging.getLogger()
@@ -63,10 +64,19 @@ def _process_record(record: dict[str, Any]) -> dict[str, Any]:
         lead_id
     )
 
+    notification_result = send_notification(enriched_payload)
+
+    logger.info(
+        "Sent lead notification. lead_id=%s notification_result=%s",
+        lead_id,
+        json.dumps(notification_result)
+    )
+
     return {
         "lead_id": lead_id,
         "raw_s3_key": raw_s3_key,
-        "enriched_s3_key": enriched_s3_key
+        "enriched_s3_key": enriched_s3_key,
+        "notification": notification_result
     }
 
 
@@ -94,7 +104,13 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
             result = _process_record(record)
             results.append(result)
 
-        except (json.JSONDecodeError, KeyError, OwnerLookupError, LeadEnrichmentError) as exc:
+        except (
+            json.JSONDecodeError,
+            KeyError,
+            OwnerLookupError,
+            LeadEnrichmentError,
+            NotificationError
+        ) as exc:
             logger.exception(
                 "Failed to process SQS record. message_id=%s error=%s",
                 message_id,
@@ -116,8 +132,6 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
             })
 
     if failures:
-        # Raising here tells Lambda/SQS the batch was not fully successful.
-        # Later we can improve this with partial batch response handling.
         raise RuntimeError(f"Failed to process {len(failures)} SQS record(s): {failures}")
 
     return {
