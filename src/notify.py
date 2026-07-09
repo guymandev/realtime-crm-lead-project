@@ -18,16 +18,16 @@ def format_lead_email_body(enriched_lead: dict[str, Any]) -> str:
     Format the required lead notification email body.
     """
 
-    return f"""New Lead Alert
-
-Name: {enriched_lead.get("display_name")}
-Lead ID: {enriched_lead.get("lead_id")}
-Created Date: {enriched_lead.get("date_created")}
-Label: {enriched_lead.get("status_label")}
-Email: {enriched_lead.get("lead_email")}
-Lead Owner: {enriched_lead.get("lead_owner")}
-Funnel: {enriched_lead.get("funnel")}
-"""
+    return (
+        "New Lead Alert\n\n"
+        f"Name: {enriched_lead.get('display_name')}\n"
+        f"Lead ID: {enriched_lead.get('lead_id')}\n"
+        f"Created Date: {enriched_lead.get('date_created')}\n"
+        f"Label: {enriched_lead.get('status_label')}\n"
+        f"Email: {enriched_lead.get('lead_email')}\n"
+        f"Lead Owner: {enriched_lead.get('lead_owner')}\n"
+        f"Funnel: {enriched_lead.get('funnel')}\n"
+    )
 
 
 def send_email_notification(enriched_lead: dict[str, Any]) -> dict[str, Any]:
