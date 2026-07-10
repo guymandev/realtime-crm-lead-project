@@ -70,8 +70,15 @@ The completed pipeline performs the following steps:
 │   └── test_parse_close_event.py
 ├── docs/
 │   └── images/
-│       └── architecture.png
+│       ├── crm-lead-notification-pipeline.png
+│       ├── ingest-lambda-api-trigger.png
+│       ├── api_gateway_post_crm.png
+│       ├── S3-ingest-source.png
+│       ├── sqs-lead-delay-queue.png
+│       ├── S3-lead-enrichment-target.png
+│       └── ses-email-notification.png
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
