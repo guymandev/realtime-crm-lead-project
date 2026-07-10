@@ -378,34 +378,6 @@ For production-style enrichment, use:
 export OWNER_LOOKUP_MODE=public_url
 ```
 
-## Testing Evidence
-
-### Below are screenshots of the key elements of the pipeline, in order of execution.
-
-#### crm-webhook-ingest Lambda w/api trigger
-
-![crm-webhook-ingest lambda w/api trigger](docs/images/ingest-lambda-api-trigger.png)
-
-#### api gateway POST route
-
-![api gateawy POST route](docs/images/api_gateway_post_crm.png)
-
-#### S3 ingest source folder
-
-![S3 ingest source folder](docs/images/S3-ingest-source.png)
-
-#### SQS lead delay queue
-
-![SQS lead delay queue](docs/images/sqs-lead-delay-queue.png)
-
-#### S3 lead enrichment target folder
-
-![S3 lead enrichment target folder](docs/images/S3-lead-enrichment-target.png)
-
-### SES email notification
-
-![SES email notification](docs/images/ses-email-notification.png)
-
 ## Deployment Packaging
 
 ### Package `crm-webhook-ingest`
@@ -507,29 +479,43 @@ Funnel: ...
 
 ## Testing Evidence
 
-Recommended evidence to capture for project review:
+The screenshots below document the key checkpoints in the pipeline, in order of execution.
 
-1. API Gateway route showing `POST /crm` attached to the ingest Lambda.
-2. Successful `curl` response from the public webhook endpoint.
-3. S3 `source/` folder showing raw CRM event files.
-4. SQS queue metrics showing delayed messages.
-5. SQS message body showing `lead_id`, `raw_bucket`, and `raw_s3_key`.
-6. Lambda test result for `lead-enrichment-worker` showing `processed_count: 1`.
-7. S3 `target/` folder showing enriched lead JSON files.
-8. CLI output of an enriched JSON object with `lead_email`, `lead_owner`, and `funnel`.
-9. SES email received with the required lead notification fields.
-10. CloudWatch logs showing successful S3 write, SQS send, enrichment, and SES notification.
+### 1. Ingest Lambda with API Gateway Trigger
 
-Suggested documentation artifacts:
+The `crm-webhook-ingest` Lambda is connected to API Gateway and receives incoming Close CRM webhook events.
 
-```text
-docs/images/architecture.png
-docs/images/api_gateway_post_crm.png
-docs/images/s3_source_events.png
-docs/images/sqs_delayed_message.png
-docs/images/s3_target_enriched.png
-docs/images/ses_email_notification.png
-```
+![crm-webhook-ingest Lambda with API trigger](docs/images/ingest-lambda-api-trigger.png)
+
+### 2. API Gateway POST Route
+
+API Gateway exposes the public `POST /crm` route used by the Close CRM webhook subscription.
+
+![API Gateway POST route](docs/images/api_gateway_post_crm.png)
+
+### 3. S3 Source Folder
+
+Raw CRM webhook events are written to the `source/` prefix using the required `crm_event_{lead_id}.json` naming pattern.
+
+![S3 ingest source folder](docs/images/S3-ingest-source.png)
+
+### 4. SQS Lead Delay Queue
+
+The SQS queue introduces the required 10-minute delay before enrichment processing begins.
+
+![SQS lead delay queue](docs/images/sqs-lead-delay-queue.png)
+
+### 5. S3 Target Folder
+
+The enrichment worker writes final enriched lead records to the `target/` prefix.
+
+![S3 lead enrichment target folder](docs/images/S3-lead-enrichment-target.png)
+
+### 6. SES Email Notification
+
+Amazon SES sends the final lead notification email containing the enriched lead details.
+
+![SES email notification](docs/images/ses-email-notification.png)
 
 ## Known Caveats
 
